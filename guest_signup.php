@@ -1,54 +1,58 @@
 <?php
-session_start();
 include 'db_connect.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST['username']);
+    $email = trim($_POST['email']);
     $password = $_POST['password'];
+    $confirm_password = $_POST['confirm_password'];
 
-    // Check the database for the user
-    $sql = "SELECT * FROM users WHERE username = ?";
+    // Validate passwords
+    if ($password !== $confirm_password) {
+        echo "<p style='color:red;'>Passwords do not match!</p>";
+        exit;
+    }
+
+    // Hash the password entered by the guest
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+    // Insert the guest into the database
+    $sql = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
+    $stmt->bind_param("sss", $username, $email, $hashed_password);
 
-    if ($user) {
-        // Verify the password
-        if (password_verify($password, $user['password'])) {
-            $_SESSION['username'] = $user['username'];
-            header("Location: home.php");
-            exit;
-        } else {
-            $error_message = "Invalid username or password.";
-        }
+    if ($stmt->execute()) {
+        echo "<p style='color:green;'>Account created successfully! <a href='login.php'>Login here</a></p>";
     } else {
-        $error_message = "User not found.";
+        if ($stmt->errno === 1062) { // Duplicate entry
+            echo "<p style='color:red;'>Username or email already exists!</p>";
+        } else {
+            echo "<p style='color:red;'>Error: " . $stmt->error . "</p>";
+        }
     }
 
     $stmt->close();
     $conn->close();
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In</title>
+    <title>Guest Sign Up</title>
     <style>
+        /* Background Image Styling */
         body {
             font-family: Arial, sans-serif;
-            background-image: url('./image/Background.jpeg'); /* Add your background image path */
+            background-image: url('image/Background.jpeg'); /* Replace with the actual background image URL */
             background-size: cover;
             background-position: center;
             margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
         }
+
+        /* Header Navigation Bar */
         .navbar {
             background-color: #fff;
             padding: 10px 20px;
@@ -56,57 +60,69 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            position: absolute;
-            top: 0;
-            width: 100%;
         }
+        
         .navbar .logo {
             display: flex;
             align-items: center;
         }
+
         .navbar img {
             height: 50px;
             margin-right: 10px;
         }
+
         .navbar a {
             text-decoration: none;
             color: #333;
             margin: 0 10px;
             font-weight: bold;
         }
+
         .navbar a:hover {
-            color: #2a9d8f;
+            color: #2a9d8f; /* Teal hover color */
         }
+
         .profile-icon {
             color: #333;
             font-size: 24px;
             margin-right: 20px;
         }
+
+        /* Centered Form Container */
         .form-container {
             background-color: #fff;
-            max-width: 600px;
+            max-width: 600px; /* Increased width */
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
             text-align: center;
+            margin: 100px auto;
             opacity: 0.95;
         }
+
+        /* Form Header Styling */
         .form-header {
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 20px;
         }
+
         .form-header img {
             height: 50px;
             margin-right: 10px;
         }
+
         .form-header span {
             font-size: 18px;
             font-weight: bold;
             color: #333;
         }
+
+        /* Input Fields */
         .form-container input[type="text"],
+        .form-container input[type="email"],
         .form-container input[type="password"] {
             width: 100%;
             padding: 10px;
@@ -115,13 +131,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             border-radius: 5px;
             font-size: 16px;
         }
-        .form-container .button-container {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
+
+        /* Sign Up Button */
         .form-container button {
-            background-color: #2a9d8f;
+            background-color: #2a9d8f; /* Teal button color */
             color: #fff;
             padding: 10px;
             border: none;
@@ -130,23 +143,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             width: 100%;
             cursor: pointer;
         }
+
         .form-container button:hover {
             background-color: #21867a;
         }
-        .error-message {
-            color: red;
-            text-align: center;
-            font-size: 16px;
+
+        /* Footer Links */
+        .footer-links {
+            margin-top: 10px;
+        }
+
+        .footer-links a {
+            color: #2a9d8f;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
 
-    <!-- Navbar -->
+    <!-- Header Section with Navbar -->
     <div class="navbar">
         <div class="logo">
-            <img src="./image/utmlogo.jpg" alt="UTM Logo">
-            <img src="./image/MJIIT LOGO.jpg" alt="MJIIT Logo">
+            <img src="./image/utmlogo.jpg" alt="UTM Logo"> <!-- Replace with actual UTM logo URL -->
+            <img src="./image/MJIIT LOGO.jpg" alt="LOGO"> <!-- Replace with actual MJIIT logo URL -->
         </div>
         <div>
             <a href="#">Home</a>
@@ -154,30 +178,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <a href="#">Rooms</a>
             <a href="#">Analytics</a>
             <a href="#">Help</a>
-            <span class="profile-icon">&#128100;</span>
+            <span class="profile-icon">&#128100;</span> <!-- Unicode character for profile icon -->
         </div>
     </div>
 
     <!-- Form Container -->
     <div class="form-container">
         <div class="form-header">
-            <img src="./image/utmlogo.jpg" alt="UTM Logo" height="50px" width="100px">
-            <img src="./image/MJIIT LOGO.jpg" alt="MJIIT Logo" height="50px" width="100px">
+            <img src="./image/utmlogo.jpg" alt="UTM Logo" height="50px" width="100px"> <!-- Replace with actual UTM logo URL -->
+            <img src="./image/MJIIT LOGO.jpg" alt="MJIIT Logo" height="50px" width="100px"> <!-- Replace with actual MJIIT logo URL -->
             <span>Malaysia-Japan International Institute of Technology</span>
         </div>
-        <h1>Sign In</h1>
-        <?php
-        if (isset($error_message)) {
-            echo "<p class='error-message'>$error_message</p>";
-        }
-        ?>
+        <h1>Sign Up</h1>
         <form action="" method="POST">
-            <input type="text" name="username" placeholder="Enter your username" required>
-            <input type="password" name="password" placeholder="Enter your password" required>
-            <div class="button-container">
-                <button type="submit">Login</button>
-                <button type="button" onclick="location.href='guest_signup.php';">Guest Sign Up</button>
-            </div>
+            <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter your password" required>
+            <button type="submit">Sign Up</button>
         </form>
     </div>
 

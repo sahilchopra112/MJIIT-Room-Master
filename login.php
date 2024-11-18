@@ -8,8 +8,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['username'], $_POST['pa
     $username = $_POST['username'];
     $password = $_POST['password'];  // You should hash this password and compare against hashed password in DB
 
-    // SQL to check the username and password
-    $sql = "SELECT user_id FROM users WHERE username = ? AND password = ?";  // Adjust this to use password hashing
+    // SQL to check the username and password, and get user role
+    $sql = "SELECT user_id, email FROM users WHERE username = ? AND password = ?";  // Adjust this to use password hashing
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ss", $username, $password);
     $stmt->execute();
@@ -18,7 +18,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['username'], $_POST['pa
     if ($result->num_rows === 1) {
         $row = $result->fetch_assoc();
         $_SESSION['user_id'] = $row['user_id'];  // Set user_id in session
-        header("Location: index.html");  // Redirect to the homepage or dashboard
+
+        // Determine user type based on the email domain
+        if ($username === 'mjadmin') {
+            header("Location: admin_dashboard.php");  // Redirect to admin dashboard
+        } elseif (strpos($row['email'], '@graduate.utm.my') !== false) {
+            header("Location: home.html");  // Redirect to home for UTM insiders
+        } else {
+            header("Location: guest_home.php");  // Redirect to guest home for other users
+        }
         exit;
     } else {
         echo "Invalid username or password";

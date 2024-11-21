@@ -204,9 +204,9 @@ $result = $stmt->get_result();
             <p>BookingSpace</p>
         </div>
         <div class="navbar-links">
-            <a href="home.html">Home</a>
+            <a href="home.php">Home</a>
             <a href="#">My Bookings</a>
-            <a href="#">Rooms</a>
+            <a href="rooms.php">Rooms</a>
             <a href="#">Analytics</a>
             <a href="#">Help</a>
         </div>

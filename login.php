@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['username'], $_POST['pa
         if ($username === 'mjadmin') {
             header("Location: admin_dashboard.php");  // Redirect to admin dashboard
         } elseif (strpos($row['email'], '@graduate.utm.my') !== false) {
-            header("Location: home.html");  // Redirect to home for UTM insiders
+            header("Location: home.php");  // Redirect to home for UTM insiders
         } else {
             header("Location: guest_home.php");  // Redirect to guest home for other users
         }

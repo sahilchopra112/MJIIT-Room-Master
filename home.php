@@ -251,7 +251,7 @@ $result = $conn->query($sql);
         <div class="navbar-links">
             <a href="#">Home</a>
             <a href="my_bookings.php">My Bookings</a>
-            <a href="#">Rooms</a>
+            <a href="rooms.php">Rooms</a>
             <a href="#">Analytics</a>
             <a href="#">Help</a>
         </div>

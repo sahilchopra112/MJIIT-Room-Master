@@ -6,13 +6,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST['username']);
     $password = $_POST['password'];
 
+fathiya
+// Check if the form data is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['username'], $_POST['password'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];  // You should hash this password and compare against hashed password in DB
+
+    // SQL to check the username and password, and get user role
+    $sql = "SELECT user_id, email FROM users WHERE username = ? AND password = ?";  // Adjust this to use password hashing
+=======
     // Check the database for the user
     $sql = "SELECT * FROM users WHERE username = ?";
+ main
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
+fathiya
+    if ($result->num_rows === 1) {
+        $row = $result->fetch_assoc();
+        $_SESSION['user_id'] = $row['user_id'];  // Set user_id in session
+
+        // Determine user type based on the email domain
+        if ($username === 'mjadmin') {
+            header("Location: admin_dashboard.php");  // Redirect to admin dashboard
+        } elseif (strpos($row['email'], '@graduate.utm.my') !== false) {
+            header("Location: home.php");  // Redirect to home for UTM insiders
+        } else {
+            header("Location: guest_home.php");  // Redirect to guest home for other users
+        }
+        exit;
 
     if ($user) {
         // Verify the password
@@ -23,6 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             $error_message = "Invalid username or password.";
         }
+ main
     } else {
         $error_message = "User not found.";
     }

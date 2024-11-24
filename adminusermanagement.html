@@ -1,0 +1,242 @@
+<!--adminusermanagement.html-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MJIIT RoomMaster - Admin User Management</title>
+    <link rel="stylesheet" href="styles2.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <div class="logo">
+                <img src="UTM-LOGO-FULL.png" alt="UTM Logo">
+                <img src="Mjiit RoomMaster logo.png" alt="MJIIT RoomMaster Logo">
+                <span class="booking-space">BookingSpace</span>
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="dashboard.php"><b>Dashboard</b></a></li>
+                <li><a href="booking.php"><b>Booking</b></a></li>
+                <li><a href="users.php" class="active"><b>Users</b></a></li>
+                <li><a href="rooms.php"><b>Rooms</b></a></li>
+                <li><a href="analytics.php"><b>Analytics</b></a></li>
+                <li><a href="help.php"><b>Help</b></a></li>
+            </ul>
+        </nav>
+        <div class="user-info">
+            <i class="fas fa-user-circle"></i>
+            <span class="admin-badge"><i class="fas fa-user-shield"></i> <b>Admin</b></span>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <h1>User Management</h1>
+            <p>Manage your team members and their account permission here</p>
+        </div>
+
+        <div class="content-container">
+            <div class="user-management-header">
+                <h2 class="section-title">All Users <span class="user-count">19</span></h2>
+                <div class="action-buttons">
+                    <button class="filter-btn">
+                        <i class="fas fa-filter"></i> &nbsp; Filters
+                    </button>
+                    <button class="add-user-btn">
+                        <i class="fas fa-plus"></i> Add User
+                    </button>
+                </div>
+            </div>
+
+            <div class="search-box">
+                <input type="text" placeholder="Search users by name or email...">
+                <button class="search-btn">Search</button>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>User Name</th>
+                            <th>Access</th>
+                            <th>Last Active</th>
+                            <th>Date Added</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="checkbox"><i class="fas fa-user" style="margin-left: 8px; color: #666;"></i></td>
+                            <td>
+                                <div>
+                                    <strong>AMIRUL QAYYUM</strong><br>
+                                    amirulqayyum@graduate.utm.my
+                                </div>
+                            </td>
+                            <td>
+                                <span class="access-tag admin">Admin</span>
+                                <a href="dataimport.html" class="access-tag data-import" style="text-decoration: none;">Data Import</a>
+                                <a href="dataexport.html" class="access-tag data-export" style="text-decoration: none;">Data Export</a>
+                            </td>
+                            <td>NOV 6, 2024</td>
+                            <td>JUN 6, 2024</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"><i class="fas fa-user" style="margin-left: 8px; color: #666;"></i></td>
+                            <td>
+                                <div>
+                                    <strong>SAHIL</strong><br>
+                                    sahil@graduate.utm.my
+                                </div>
+                            </td>
+                            <td>
+                                <span class="access-tag admin">Admin</span>
+                                <span class="access-tag data-import">Data Import</span>
+                                <span class="access-tag data-export">Data Export</span>
+                            </td>
+                            <td>NOV 6, 2024</td>
+                            <td>JUN 6, 2024</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"><i class="fas fa-user" style="margin-left: 8px; color: #666;"></i></td>
+                            <td>
+                                <div>
+                                    <strong>TAHSIN</strong><br>
+                                    tahsin@graduate.utm.my
+                                </div>
+                            </td>
+                            <td>
+                                <span class="access-tag admin">Admin</span>
+                                <span class="access-tag data-import">Data Import</span>
+                                <span class="access-tag data-export">Data Export</span>
+                            </td>
+                            <td>NOV 6, 2024</td>
+                            <td>JUN 6, 2024</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"><i class="fas fa-user" style="margin-left: 8px; color: #666;"></i></td>
+                            <td>
+                                <div>
+                                    <strong>RIFAH</strong><br>
+                                    rifah@graduate.utm.my
+                                </div>
+                            </td>
+                            <td>
+                                <span class="access-tag admin">Admin</span>
+                                <span class="access-tag data-import">Data Import</span>
+                                <span class="access-tag data-export">Data Export</span>
+                            </td>
+                            <td>NOV 6, 2024</td>
+                            <td>JUN 6, 2024</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"><i class="fas fa-user" style="margin-left: 8px; color: #666;"></i></td>
+                            <td>
+                                <div>
+                                    <strong>FATHIYA</strong><br>
+                                    fathiya@graduate.utm.my
+                                </div>
+                            </td>
+                            <td>
+                                <span class="access-tag admin">Admin</span>
+                                <span class="access-tag data-import">Data Import</span>
+                                <span class="access-tag data-export">Data Export</span>
+                            </td>
+                            <td>NOV 6, 2024</td>
+                            <td>JUN 6, 2024</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"><i class="fas fa-user" style="margin-left: 8px; color: #666;"></i></td>
+                            <td>
+                                <div>
+                                    <strong>AHMAD</strong><br>
+                                    ahmad@graduate.utm.my
+                                </div>
+                            </td>
+                            <td>
+                                <span class="access-tag data-import">Data Import</span>
+                                <span class="access-tag data-export">Data Export</span>
+                                <span class="access-tag delete-user"><i class="fas fa-times"></i> Delete User</span>
+                            </td>
+                            <td>NOV 6, 2024</td>
+                            <td>JUN 6, 2024</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"><i class="fas fa-user" style="margin-left: 8px; color: #666;"></i></td>
+                            <td>
+                                <div>
+                                    <strong>ALICE</strong><br>
+                                    Alice@graduate.utm.my
+                                </div>
+                            </td>
+                            <td>
+                                <span class="access-tag data-import">Data Import</span>
+                                <span class="access-tag data-export">Data Export</span>
+                                <span class="access-tag delete-user"><i class="fas fa-times"></i> Delete User</span>
+                            </td>
+                            <td>NOV 6, 2024</td>
+                            <td>JUN 6, 2024</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"><i class="fas fa-user" style="margin-left: 8px; color: #666;"></i></td>
+                            <td>
+                                <div>
+                                    <strong>PUTERI</strong><br>
+                                    puteri@graduate.utm.my
+                                </div>
+                            </td>
+                            <td>
+                                <span class="access-tag data-import">Data Import</span>
+                                <span class="access-tag data-export">Data Export</span>
+                                <span class="access-tag delete-user"><i class="fas fa-times"></i> Delete User</span>
+                            </td>
+                            <td>NOV 6, 2024</td>
+                            <td>JUN 6, 2024</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <button class="prev-btn">&lt;</button>
+                <span>1</span>
+                <span>of</span>
+                <span>3</span>
+                <button class="next-btn">&gt;</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 MJIIT BookingSpace - Admin Portal</p>
+    </footer>
+    <script>
+        // Handle clicks on data import/export tags
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all access tags
+            const dataImportTags = document.querySelectorAll('.access-tag.data-import');
+            const dataExportTags = document.querySelectorAll('.access-tag.data-export');
+    
+            // Add click handlers for data import tags
+            dataImportTags.forEach(tag => {
+                tag.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.location.href = 'dataimport.html';
+                });
+            });
+    
+            // Add click handlers for data export tags
+            dataExportTags.forEach(tag => {
+                tag.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.location.href = 'dataexport.html';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

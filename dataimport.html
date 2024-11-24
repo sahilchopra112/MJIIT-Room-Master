@@ -1,0 +1,225 @@
+<!--dataimport.html-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MJIIT RoomMaster - Data Import</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Base styles from original CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('bg website.png');
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        .booking-space {
+            color: rgb(34, 231, 212);
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-left: 1rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: #8B0000;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        nav a:hover{
+            color: rgb(255, 208, 0);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .content-container {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        footer {
+            background: #8B0000;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: auto;
+        }
+
+        /* Custom styles for import page */
+        .import-area {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .import-area:hover {
+            border-color: #1E90FF;
+        }
+
+        .import-icon {
+            font-size: 3rem;
+            color: #1E90FF;
+            margin-bottom: 1rem;
+        }
+
+        .import-text {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .browse-btn {
+            background: #1E90FF;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .browse-btn:hover {
+            background: #187bcd;
+        }
+
+        .format-info {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+
+        .format-info h3 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .format-list {
+            list-style: none;
+        }
+
+        .format-list li {
+            margin-bottom: 0.5rem;
+            color: #666;
+        }
+
+        .format-list li i {
+            color: #1E90FF;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="UTM-LOGO-FULL.png" alt="UTM Logo">&nbsp;&nbsp;
+            <img src="Mjiit RoomMaster logo.png" alt="MJIIT RoomMaster Logo">
+            <span class="booking-space">BookingSpace</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="dashboard.php"><b>Dashboard</b></a></li>
+                <li><a href="booking.php"><b>Booking</b></a></li>
+                <li><a href="users.php"><b>Users</b></a></li>
+                <li><a href="rooms.php"><b>Rooms</b></a></li>
+                <li><a href="analytics.php"><b>Analytics</b></a></li>
+                <li><a href="help.php"><b>Help</b></a></li>
+            </ul>
+        </nav>
+        <div class="user-info">
+            <span class="admin-badge" style="color: #8B0000;"><i class="fas fa-user-shield"></i> <b>Admin</b></span>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <h1>Data Import</h1>
+            <p>Import your data from files in supported formats</p>
+        </div>
+
+        <div class="content-container">
+            <div class="import-area">
+                <i class="fas fa-cloud-upload-alt import-icon"></i>
+                <p class="import-text">Drag and drop your files here</p>
+                <p class="import-text">or</p>
+                <button class="browse-btn">Browse Files</button>
+            </div>
+
+            <div class="format-info">
+                <h3>Supported Formats</h3>
+                <ul class="format-list">
+                    <li><i class="fas fa-file-excel"></i> Excel files (.xlsx, .xls)</li>
+                    <li><i class="fas fa-file-csv"></i> CSV files (.csv)</li>
+                    <li><i class="fas fa-file-alt"></i> Text files (.txt)</li>
+                </ul>
+                <h3 style="margin-top: 1.5rem">Import Guidelines</h3>
+                <ul class="format-list">
+                    <li><i class="fas fa-info-circle"></i> Maximum file size: 10MB</li>
+                    <li><i class="fas fa-info-circle"></i> First row should contain column headers</li>
+                    <li><i class="fas fa-info-circle"></i> Required columns: Name, Email, Access Level</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 MJIIT BookingSpace - Admin Portal</p>
+    </footer>
+</body>
+</html>

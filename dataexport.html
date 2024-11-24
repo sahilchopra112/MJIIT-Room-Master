@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MJIIT BookingSpace - Data Export</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Base styles from original CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('bg website.png');
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        .booking-space {
+            color: rgb(34, 231, 212);
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-left: 1rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: #8B0000;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        nav a:hover{
+            color: rgb(255, 208, 0);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .content-container {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        footer {
+            background: #8B0000;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: auto;
+        }
+
+        /* Custom styles for export page */
+        .export-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .export-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .export-card:hover {
+            border-color: #FF69B4;
+            transform: translateY(-2px);
+        }
+
+        .export-icon {
+            font-size: 2.5rem;
+            color: #FF69B4;
+            margin-bottom: 1rem;
+        }
+
+        .export-title {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .export-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .export-btn {
+            background: #FF69B4;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .export-btn:hover {
+            background: #ff4da6;
+        }
+
+        .export-filters {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+
+        .filter-group {
+            margin-bottom: 1rem;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .filter-group select, .filter-group input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .date-filters {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .apply-filters {
+            background: #8B0000;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .apply-filters:hover {
+            background: #a50000;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="UTM-LOGO-FULL.png" alt="UTM Logo">&nbsp;&nbsp;
+            <img src="Mjiit RoomMaster logo.png" alt="MJIIT RoomMaster Logo">
+            <span class="booking-space">BookingSpace</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="dashboard.php"><b>Dashboard</b></a></li>
+                <li><a href="booking.php"><b>Booking</b></a></li>
+                <li><a href="users.php"><b>Users</b></a></li>
+                <li><a href="rooms.php"><b>Rooms</b></a></li>
+                <li><a href="analytics.php"><b>Analytics</b></a></li>
+                <li><a href="help.php"><b>Help</b></a></li>
+            </ul>
+        </nav>
+        <div class="user-info">
+            <span class="admin-badge" style="color: #8B0000;"><i class="fas fa-user-shield"></i> <b>Admin</b></span>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <h1>Data Export</h1>
+            <p>Export your data in various formats</p>
+        </div>
+
+        <div class="content-container">
+            <div class="export-options">
+                <div class="export-card">
+                    <i class="fas fa-file-excel export-icon"></i>
+                    <h3 class="export-title">Excel Export</h3>
+                    <p class="export-description">Export data in XLSX format with formatted tables and multiple sheets</p>
+                    <button class="export-btn">Export as Excel</button>
+                </div>
+                <div class="export-card">
+                    <i class="fas fa-file-pdf export-icon"></i>
+                    <h3 class="export-title">PDF Export</h3>
+                    <p class="export-description">Export data in PDF format for easy sharing and printing</p>
+                    <button class="export-btn">Export as PDF</button>
+                </div>
+                <div class="export-card">
+                    <i class="fas fa-file-csv export-icon"></i>
+                    <h3 class="export-title">CSV Export</h3>
+                    <p class="export-description">Export data in CSV format for maximum compatibility</p>
+                    <button class="export-btn">Export as CSV</button>
+                </div>
+                <div class="export-card">
+                    <i class="fas fa-code export-icon"></i>
+                    <h3 class="export-title">JSON Export</h3>
+                    <p class="export-description">Export data in JSON format for API and development use</p>
+                    <button class="export-btn">Export as JSON</button>
+                </div>
+            </div>
+            <div class="export-filters">
+                <h3 style="margin-bottom: 1rem">Export Filters</h3>
+                <div class="filter-group">
+                    <label>Data Type</label>
+                    <select>
+                        <option>All Data</option>
+                        <option>User Data</option>
+                        <option>Booking Data</option>
+                        <option>Room Data</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Date Range</label>
+                    <div class="date-filters">
+                        <div>
+                            <label>From</label>
+                            <input type="date" name="date_from">
+                        </div>
+                        <div>
+                            <label>To</label>
+                            <input type="date" name="date_to">
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select>
+                        <option>All Status</option>
+                        <option>Active</option>
+                        <option>Completed</option>
+                        <option>Cancelled</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Room Type</label>
+                    <select>
+                        <option>All Rooms</option>
+                        <option>Lecture Halls</option>
+                        <option>Labs</option>
+                        <option>Meeting Rooms</option>
+                        <option>Study Areas</option>
+                    </select>
+                </div>
+                <button class="apply-filters">Apply Filters</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 MJIIT BookingSpace. All rights reserved.</p>
+    </footer>
+</body>
+</html>

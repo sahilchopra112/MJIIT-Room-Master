@@ -405,3 +405,77 @@ footer {
 .access-tag.delete-user i {
     margin-right: 5px;  /* Add some space between icon and text */
 }
+
+.filter-modal-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 400px;
+}
+
+.filter-section {
+    margin-bottom: 20px;
+}
+
+.filter-section h3 {
+    color: #8B0000;
+    margin-bottom: 10px;
+}
+
+.filter-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.filter-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-option input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+}
+
+.filter-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.filter-actions button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+}
+
+.apply-filters {
+    background-color: #8B0000;
+    color: white;
+}
+
+.clear-filters {
+    background-color: #6c757d;
+    color: white;
+}
+
+/* Style for active filter button */
+.filter-btn.active {
+    background-color: #FF4500;
+    color: white;
+}
+
+/* Style for filter count badge */
+.filter-count {
+    background-color: #FF4500;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    margin-left: 5px;
+}

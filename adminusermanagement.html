@@ -209,6 +209,50 @@
                 <button class="next-btn">&gt;</button>
             </div>
         </div>
+        <div id="addUserModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Add New User</h2>
+                <form id="addUserForm">
+                    <div class="form-group">
+                        <label for="userName">Full Name:</label>
+                        <input type="text" id="userName" name="userName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userEmail">Email:</label>
+                        <input type="email" id="userEmail" name="userEmail" required 
+                               pattern=".*@graduate\.utm\.my$" 
+                               title="Please use a valid UTM graduate email address">
+                    </div>
+                    <div class="form-group">
+                        <label>Access Level:</label>
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" name="access" value="admin"> Admin
+                            </label>
+                            <label>
+                                <input type="checkbox" name="access" value="dataImport"> Data Import
+                            </label>
+                            <label>
+                                <input type="checkbox" name="access" value="dataExport"> Data Export
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="submit-btn">Add User</button>
+                </form>
+            </div>
+        </div>
+        <div id="deleteConfirmModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Confirm Delete</h2>
+                <p>Are you sure you want to delete this user? This action cannot be undone.</p>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button id="confirmDelete" class="submit-btn" style="background-color: #DC3545;">Delete</button>
+                    <button id="cancelDelete" class="submit-btn" style="background-color: #6c757d;">Cancel</button>
+                </div>
+            </div>
+        </div>
     </main>
 
     <footer>
@@ -238,5 +282,152 @@
             });
         });
     </script>
+    <script>
+// Get modal elements
+const addUserModal = document.getElementById('addUserModal');
+const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+const addUserBtn = document.querySelector('.add-user-btn');
+const closeBtns = document.querySelectorAll('.close');
+const addUserForm = document.getElementById('addUserForm');
+
+// Variables to store current user being deleted
+let currentDeleteUser = null;
+
+// Show Add User modal
+addUserBtn.onclick = function() {
+    addUserModal.style.display = "block";
+}
+
+// Close modals when clicking (x)
+closeBtns.forEach(btn => {
+    btn.onclick = function() {
+        addUserModal.style.display = "none";
+        deleteConfirmModal.style.display = "none";
+    }
+});
+
+// Close modals when clicking outside
+window.onclick = function(event) {
+    if (event.target == addUserModal || event.target == deleteConfirmModal) {
+        addUserModal.style.display = "none";
+        deleteConfirmModal.style.display = "none";
+    }
+}
+
+// Handle Add User form submission
+addUserForm.onsubmit = function(e) {
+    e.preventDefault();
+    
+    // Get form data
+    const formData = {
+        name: document.getElementById('userName').value,
+        email: document.getElementById('userEmail').value,
+        access: Array.from(document.querySelectorAll('input[name="access"]:checked'))
+                    .map(checkbox => checkbox.value)
+    };
+
+    // Here you would typically make an AJAX call to your backend
+    // For demonstration, we'll add the user directly to the table
+    addUserToTable(formData);
+    
+    // Clear form and close modal
+    addUserForm.reset();
+    addUserModal.style.display = "none";
+}
+
+// Function to add user to table
+function addUserToTable(userData) {
+    const tbody = document.querySelector('table tbody');
+    const newRow = document.createElement('tr');
+    
+    // Get current date for "Date Added"
+    const currentDate = new Date();
+    const dateAdded = currentDate.toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric', 
+        year: 'numeric'
+    }).toUpperCase();
+
+    // Create access tags HTML
+    const accessTags = userData.access.map(access => {
+        let className = '';
+        let text = '';
+        
+        switch(access) {
+            case 'admin':
+                className = 'admin';
+                text = 'Admin';
+                break;
+            case 'dataImport':
+                className = 'data-import';
+                text = 'Data Import';
+                break;
+            case 'dataExport':
+                className = 'data-export';
+                text = 'Data Export';
+                break;
+        }
+        
+        return `<span class="access-tag ${className}">${text}</span>`;
+    }).join('');
+
+    // Add delete tag if user is not admin
+    if (!userData.access.includes('admin')) {
+        accessTags += `
+            <span class="access-tag delete-user">
+                <i class="fas fa-times"></i> Delete User
+            </span>`;
+    }
+
+    newRow.innerHTML = `
+        <td><input type="checkbox"><i class="fas fa-user" style="margin-left: 8px; color: #666;"></i></td>
+        <td>
+            <div>
+                <strong>${userData.name}</strong><br>
+                ${userData.email}
+            </div>
+        </td>
+        <td>${accessTags}</td>
+        <td>${dateAdded}</td>
+        <td>${dateAdded}</td>
+    `;
+
+    tbody.insertBefore(newRow, tbody.firstChild);
+    attachDeleteHandlers();
+}
+
+// Function to handle delete user
+function attachDeleteHandlers() {
+    const deleteButtons = document.querySelectorAll('.access-tag.delete-user');
+    
+    deleteButtons.forEach(button => {
+        button.onclick = function() {
+            // Store reference to user being deleted
+            currentDeleteUser = this.closest('tr');
+            deleteConfirmModal.style.display = "block";
+        }
+    });
+}
+
+// Handle delete confirmation
+document.getElementById('confirmDelete').onclick = function() {
+    if (currentDeleteUser) {
+        // Here you would typically make an AJAX call to your backend
+        // For demonstration, we'll just remove the row
+        currentDeleteUser.remove();
+        currentDeleteUser = null;
+        deleteConfirmModal.style.display = "none";
+    }
+}
+
+// Handle delete cancellation
+document.getElementById('cancelDelete').onclick = function() {
+    currentDeleteUser = null;
+    deleteConfirmModal.style.display = "none";
+}
+
+// Initial attachment of delete handlers
+attachDeleteHandlers();
+</script>
 </body>
 </html>

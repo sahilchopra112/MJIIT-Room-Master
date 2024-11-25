@@ -1,7 +1,20 @@
-
 <?php
-include 'config.php'; // This includes your database connection setup
+session_start(); // Start the session
 
+// Check if the user is logged in, if not redirect to the login page
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php"); // Replace 'login.php' with your actual login page
+    exit();
+}
+
+// Logout logic
+if (isset($_GET['logout'])) {
+    session_destroy(); // Destroy the session
+    header("Location: login.php"); // Redirect to login page after logout
+    exit();
+}
+
+include 'config.php'; // Include the database connection
 // Fetch all rooms from the database
 $sql = "SELECT room_name, location, capacity, equipment, image, status FROM rooms";
 $result = $conn->query($sql);
@@ -82,6 +95,21 @@ $result = $conn->query($sql);
 
         .navbar-profile i {
             font-size: 24px;
+        }
+
+        /* Logout Button Styling */
+        .logout-button {
+            background-color: #800000;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .logout-button:hover {
+            background-color: #d43f3f;
         }
 
         /* Welcome Text Container */
@@ -258,6 +286,10 @@ $result = $conn->query($sql);
         <div class="navbar-profile">
             <i class="fa-regular fa-user"></i>
         </div>
+        <!-- Logout Button -->
+        <div class="logout-button-container">
+            <a href="?logout=true" class="logout-button">Logout</a>
+        </div>
     </div>
 
     <!-- Welcome Page -->
@@ -289,51 +321,26 @@ $result = $conn->query($sql);
                 </select>
             </div>
             <div class="search-bar-item small">
-                <input type="text" placeholder="Number of People">
+                <button class="search-button">Search</button>
             </div>
-            <button class="search-button">Search</button>
         </div>
 
-        <!-- Rooms Container -->
+        <!-- Rooms Display -->
         <div class="rooms-container">
-            <?php
-            // Loop through each room fetched from the database
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    // Set room variables from the database
-                    $roomName = htmlspecialchars($row['room_name']);
-                    $location = htmlspecialchars($row['location']);
-                    $capacity = htmlspecialchars($row['capacity']);
-                    $equipment = htmlspecialchars($row['equipment']);
-                    $image = htmlspecialchars($row['image']);
-                    $status = htmlspecialchars($row['status']);
-
-                    // Determine availability status
-                    $availabilityClass = $status === 'Available' ? 'available' : 'not-available';
-                    ?>
-
-                    <!-- Dynamic Room Card -->
-                    <a href="booking.php?room=<?php echo urlencode($roomName); ?>&location=<?php echo urlencode($location); ?>&capacity=<?php echo urlencode($capacity); ?>&equipment=<?php echo urlencode($equipment); ?>&image=<?php echo urlencode($image); ?>">
-                        <div class="room">
-                            <img src="<?php echo $image; ?>" alt="<?php echo $roomName; ?>">
-                            <div class="room-details">
-                                <h3><?php echo $roomName; ?></h3>
-                                <p>Location: <?php echo $location; ?></p>
-                                <p>Capacity: <?php echo $capacity; ?> People</p>
-                                <p>Equipment: <?php echo $equipment; ?></p>
-                            </div>
-                            <div class="room-status <?php echo $availabilityClass; ?>"></div>
-                        </div>
-                    </a>
-
-                    <?php
-                }
-            } else {
-                echo "<p>No rooms available.</p>";
-            }
-            $conn->close();
-            ?>
+            <?php while($row = $result->fetch_assoc()): ?>
+            <div class="room">
+                <img src="<?php echo $row['image']; ?>" alt="Room Image">
+                <div class="room-details">
+                    <h3><?php echo $row['room_name']; ?></h3>
+                    <p>Location: <?php echo $row['location']; ?></p>
+                    <p>Capacity: <?php echo $row['capacity']; ?> people</p>
+                    <p>Equipment: <?php echo $row['equipment']; ?></p>
+                    <p>Status: <span class="room-status <?php echo ($row['status'] == 'available' ? 'available' : 'not-available'); ?>"></span></p>
+                </div>
+            </div>
+            <?php endwhile; ?>
         </div>
+
     </div>
 
 </body>

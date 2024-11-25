@@ -31,6 +31,7 @@ $result = $stmt->get_result();
     <title>My Bookings</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         /* General Styles */
         body {
@@ -97,17 +98,17 @@ $result = $stmt->get_result();
         .booking-header {
             background-color: #8B0000;
             color: white;
-            padding: 10px;
+            padding: 20px;
             border-radius: 6px;
             text-align: center;
-            width: 80%;
-            margin-left: auto; /* Centering */
-            margin-right: auto; /* Centering */
+            margin: 30px auto;
+            max-width: 900px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         /* Booking List Container */
         .my-booking-container {
-            margin-top: 50px;
+            margin-top: 20px;
             padding: 20px;
             background-color: white;
             border-radius: 6px;
@@ -141,7 +142,7 @@ $result = $stmt->get_result();
             margin-right: 20px;
         }
 
-        .booking-item h3 {
+        .booking-item h5 {
             color: #000000;
             margin-bottom: 5px;
             padding-bottom: 5px;
@@ -182,10 +183,15 @@ $result = $stmt->get_result();
 
         /* Button Styling */
         .btn-book-new {
+            display: inline-block;
             background-color: white;
             color: #8B0000;
             border: 2px solid #8B0000;
+            padding: 10px 20px;
             font-weight: bold;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-top: 10px;
         }
 
         .btn-book-new:hover {
@@ -205,7 +211,7 @@ $result = $stmt->get_result();
         </div>
         <div class="navbar-links">
             <a href="home.php">Home</a>
-            <a href="#">My Bookings</a>
+            <a href="my_bookings.php">My Bookings</a>
             <a href="rooms.php">Rooms</a>
             <a href="#">Analytics</a>
             <a href="#">Help</a>
@@ -215,40 +221,75 @@ $result = $stmt->get_result();
         </div>
     </div>
 
-    <!-- Main Booking Section -->
-    <div class="container my-5">
-        <div class="booking-header mb-4">
-            <h2>My Bookings</h2>
-            <p>You may find the status of your bookings here</p>
-            <button class="btn btn-book-new mb-3">Book New</button>
-        </div>
+    <!-- Header Section -->
+    <div class="booking-header">
+        <h2>My Bookings</h2>
+        <p>You may find the status of your bookings here</p>
+        <a href="rooms.php" class="btn-book-new">Book New</a> <!-- Updated Book New Button -->
+    </div>
 
-        <!-- My Bookings Section -->
-        <div class="my-booking-container">
-            <h4 style="text-align: left; color: #000000; margin-bottom: 20px;">My Bookings</h4>
-            <div class="booking-list">
-                <?php
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-                        echo '
-                        <div class="booking-item">
-                            <div class="booking-details">
-                                <h5>' . htmlspecialchars($row['room_name']) . '</h5>
-                                <p><strong>Date:</strong> ' . htmlspecialchars($row['booking_date']) . '</p>
-                                <p><strong>Time:</strong> ' . htmlspecialchars($row['start_time']) . ' - ' . htmlspecialchars($row['end_time']) . '</p>
-                                <p><strong>Status:</strong> <span class="' . (htmlspecialchars($row['status']) === 'Confirmed' ? 'status-confirmed' : (htmlspecialchars($row['status']) === 'Pending' ? 'status-pending' : 'status-rejected')) . '">' . htmlspecialchars($row['status']) . '</span></p>
-                            </div>
-                            <a href="cancel_booking.php?id=' . htmlspecialchars($row['booking_id']) . '" class="cancel-btn" onclick="return confirm(\'Are you sure you want to cancel this booking?\')">Cancel</a>
-                        </div>';
-                    }
-                } else {
-                    echo '<p>You have no bookings at the moment.</p>';
+    <!-- My Bookings Section -->
+    <div class="my-booking-container">
+        <h4 style="text-align: left; color: #000000; margin-bottom: 20px;">My Bookings</h4>
+        <div class="booking-list">
+            <?php
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    echo '
+                    <div class="booking-item" id="booking-' . htmlspecialchars($row['booking_id']) . '">
+                        <div class="booking-details">
+                            <h5>' . htmlspecialchars($row['room_name']) . '</h5>
+                            <p><strong>Date:</strong> ' . htmlspecialchars($row['booking_date']) . '</p>
+                            <p><strong>Time:</strong> ' . htmlspecialchars($row['start_time']) . ' - ' . htmlspecialchars($row['end_time']) . '</p>
+                            <p><strong>Status:</strong> <span class="' . (htmlspecialchars($row['status']) === 'Confirmed' ? 'status-confirmed' : (htmlspecialchars($row['status']) === 'Pending' ? 'status-pending' : 'status-rejected')) . '">' . htmlspecialchars($row['status']) . '</span></p>
+                        </div>
+                        <button class="cancel-btn" data-id="' . htmlspecialchars($row['booking_id']) . '">Cancel</button>
+                    </div>';
                 }
-                $conn->close();
-                ?>
-            </div>
+            } else {
+                echo '<p>You have no bookings at the moment.</p>';
+            }
+            $conn->close();
+            ?>
         </div>
     </div>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll(".cancel-btn").forEach(button => {
+                button.addEventListener("click", () => {
+                    const bookingId = button.getAttribute("data-id");
+                    const confirmation = confirm("Are you sure you want to cancel this booking?");
+                    if (confirmation) {
+                        fetch("cancel_booking.php", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/x-www-form-urlencoded",
+                            },
+                            body: `id=${bookingId}`,
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert("Booking canceled successfully.");
+                                document.getElementById(`booking-${bookingId}`).remove();
+                            } else {
+                                alert("Failed to cancel the booking. Please try again.");
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                            alert("An error occurred. Please try again.");
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
+
+
+
+
+

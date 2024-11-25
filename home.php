@@ -104,7 +104,7 @@ $result = $conn->query($sql);
             align-items: center;
             background-color: #fff;
             border: 2px solid #8B0000;
-            border-radius: 10px;
+            border-radius: 8px;
             padding: 5px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             max-width: 900px;
@@ -271,28 +271,42 @@ $result = $conn->query($sql);
 
         <!-- Search Bar Container -->
         <div class="search-bar-container">
-            <div class="search-bar-item">
-                <input type="text" placeholder="Room Name">
-            </div>
-            <div class="search-bar-item">
-                <select>
-                    <option>Check-in Time</option>
-                    <option>08:00</option>
-                    <option>09:00</option>
-                    <option>10:00</option>
-                </select>
-                <select>
-                    <option>Check-out Time</option>
-                    <option>10:00</option>
-                    <option>11:00</option>
-                    <option>12:00</option>
-                </select>
-            </div>
-            <div class="search-bar-item small">
-                <input type="text" placeholder="Number of People">
-            </div>
-            <button class="search-button">Search</button>
-        </div>
+    <!-- Room Name Input -->
+    <div class="search-bar-item">
+        <input type="text" placeholder="Room Name">
+    </div>
+    
+    <!-- Check-in Date Input -->
+    <div class="search-bar-item small">
+        <input type="text" id="checkin-date-display" placeholder="DATE" onfocus="(this.type='date')" onblur="(this.type='text')">
+    </div>
+    
+    <!-- Check-in and Check-out Time -->
+    <div class="search-bar-item">
+        <select>
+            <option>Check-in Time</option>
+            <option>08:00</option>
+            <option>09:00</option>
+            <option>10:00</option>
+        </select>
+        <select>
+            <option>Check-out Time</option>
+            <option>10:00</option>
+            <option>11:00</option>
+            <option>12:00</option>
+        </select>
+    </div>
+    
+    <!-- Number of People -->
+    <div class="search-bar-item small">
+        <input type="text" placeholder="Number of People">
+    </div>
+    
+    <!-- Search Button -->
+    <button class="search-button" onclick="submitSearch()">Search</button>
+</div>
+
+
 
         <!-- Rooms Container -->
         <div class="rooms-container">

@@ -1,61 +1,85 @@
 <?php
 session_start();
-include 'db_connect.php';
+include 'config.php'; // Ensure database connection
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = trim($_POST['username']);
-    $password = $_POST['password'];
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php?message=Please login to book a room.");
+    exit;
+}
 
-fathiya
-// Check if the form data is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['username'], $_POST['password'])) {
-    $username = $_POST['username'];
-    $password = $_POST['password'];  // You should hash this password and compare against hashed password in DB
+// Check if the form was submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Debugging: Print out $_POST data
+    echo "<pre>";
+    print_r($_POST);
+    echo "</pre>";
 
-    // SQL to check the username and password, and get user role
-    $sql = "SELECT user_id, email FROM users WHERE username = ? AND password = ?";  // Adjust this to use password hashing
-=======
-    // Check the database for the user
-    $sql = "SELECT * FROM users WHERE username = ?";
- main
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
-fathiya
-    if ($result->num_rows === 1) {
-        $row = $result->fetch_assoc();
-        $_SESSION['user_id'] = $row['user_id'];  // Set user_id in session
+    $user_id = $_SESSION['user_id'];
+    $room_name = $_POST['room'] ?? ''; // Use null coalescing to avoid errors
+    $booking_date = $_POST['booking_date'] ?? '';
+    $checkin_time = $_POST['checkin_time'] ?? '';
+    $checkout_time = $_POST['checkout_time'] ?? '';
 
-        // Determine user type based on the email domain
-        if ($username === 'mjadmin') {
-            header("Location: admin_dashboard.php");  // Redirect to admin dashboard
-        } elseif (strpos($row['email'], '@graduate.utm.my') !== false) {
-            header("Location: home.php");  // Redirect to home for UTM insiders
-        } else {
-            header("Location: guest_home.php");  // Redirect to guest home for other users
-        }
+    // Validate input data
+    if (empty($room_name) || empty($booking_date) || empty($checkin_time) || empty($checkout_time)) {
+        $error_message = "All fields are required.";
+        echo $error_message; // Display error message
         exit;
+    } else {
+        // Get the room_id for the selected room
+        $room_query = "SELECT room_id FROM rooms WHERE room_name = ?";
+        $stmt = $conn->prepare($room_query);
+        $stmt->bind_param("s", $room_name);
+        $stmt->execute();
+        $room_result = $stmt->get_result();
 
-    if ($user) {
-        // Verify the password
-        if (password_verify($password, $user['password'])) {
-            $_SESSION['username'] = $user['username'];
-            header("Location: home.php");
+        if ($room_result->num_rows === 0) {
+            $error_message = "Invalid room selection.";
+            echo $error_message; // Display error message
             exit;
         } else {
-            $error_message = "Invalid username or password.";
-        }
- main
-    } else {
-        $error_message = "User not found.";
-    }
+            $room_data = $room_result->fetch_assoc();
+            $room_id = $room_data['room_id'];
 
-    $stmt->close();
-    $conn->close();
+            // Check if the room is already booked during the selected time
+            $availability_query = "SELECT * FROM bookings 
+                                   WHERE room_id = ? 
+                                   AND booking_date = ? 
+                                   AND (start_time < ? AND end_time > ?)";
+            $availability_stmt = $conn->prepare($availability_query);
+            $availability_stmt->bind_param("isss", $room_id, $booking_date, $checkout_time, $checkin_time);
+            $availability_stmt->execute();
+            $availability_result = $availability_stmt->get_result();
+
+            if ($availability_result->num_rows > 0) {
+                $error_message = "This room is already booked during the selected time.";
+                echo $error_message; // Display error message
+                exit;
+            } else {
+                // Insert the booking into the database
+                $insert_query = "INSERT INTO bookings (user_id, room_id, booking_date, start_time, end_time, status) 
+                                 VALUES (?, ?, ?, ?, ?, 'Confirmed')";
+                $insert_stmt = $conn->prepare($insert_query);
+                $insert_stmt->bind_param("iisss", $user_id, $room_id, $booking_date, $checkin_time, $checkout_time);
+
+                if ($insert_stmt->execute()) {
+                    header("Location: my_bookings.php?message=Booking confirmed.");
+                    exit;
+                } else {
+                    $error_message = "Error: " . $conn->error;
+                    echo $error_message; // Display error message
+                    exit;
+                }
+            }
+        }
+    }
+} else {
+    echo "Invalid request method.";
+    exit;
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,7 +89,7 @@ fathiya
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-image: url('./image/Background.jpeg'); /* Add your background image path */
+            background-image: url('./image/Background.jpeg');
             background-size: cover;
             background-position: center;
             margin: 0;
@@ -74,39 +98,6 @@ fathiya
             align-items: center;
             min-height: 100vh;
         }
-        .navbar {
-            background-color: #fff;
-            padding: 10px 20px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: absolute;
-            top: 0;
-            width: 100%;
-        }
-        .navbar .logo {
-            display: flex;
-            align-items: center;
-        }
-        .navbar img {
-            height: 50px;
-            margin-right: 10px;
-        }
-        .navbar a {
-            text-decoration: none;
-            color: #333;
-            margin: 0 10px;
-            font-weight: bold;
-        }
-        .navbar a:hover {
-            color: #2a9d8f;
-        }
-        .profile-icon {
-            color: #333;
-            font-size: 24px;
-            margin-right: 20px;
-        }
         .form-container {
             background-color: #fff;
             max-width: 600px;
@@ -114,22 +105,6 @@ fathiya
             border-radius: 10px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
             text-align: center;
-            opacity: 0.95;
-        }
-        .form-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        .form-header img {
-            height: 50px;
-            margin-right: 10px;
-        }
-        .form-header span {
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
         }
         .form-container input[type="text"],
         .form-container input[type="password"] {
@@ -166,36 +141,11 @@ fathiya
     </style>
 </head>
 <body>
-
-    <!-- Navbar -->
-    <div class="navbar">
-        <div class="logo">
-            <img src="./image/utmlogo.jpg" alt="UTM Logo">
-            <img src="./image/MJIIT LOGO.jpg" alt="MJIIT Logo">
-        </div>
-        <div>
-            <a href="#">Home</a>
-            <a href="#">My Bookings</a>
-            <a href="#">Rooms</a>
-            <a href="#">Analytics</a>
-            <a href="#">Help</a>
-            <span class="profile-icon">&#128100;</span>
-        </div>
-    </div>
-
-    <!-- Form Container -->
     <div class="form-container">
-        <div class="form-header">
-            <img src="./image/utmlogo.jpg" alt="UTM Logo" height="50px" width="100px">
-            <img src="./image/MJIIT LOGO.jpg" alt="MJIIT Logo" height="50px" width="100px">
-            <span>Malaysia-Japan International Institute of Technology</span>
-        </div>
         <h1>Sign In</h1>
-        <?php
-        if (isset($error_message)) {
-            echo "<p class='error-message'>$error_message</p>";
-        }
-        ?>
+        <?php if (isset($error_message)): ?>
+            <p class="error-message"><?php echo $error_message; ?></p>
+        <?php endif; ?>
         <form action="" method="POST">
             <input type="text" name="username" placeholder="Enter your username" required>
             <input type="password" name="password" placeholder="Enter your password" required>
@@ -205,6 +155,5 @@ fathiya
             </div>
         </form>
     </div>
-
 </body>
 </html>

@@ -6,20 +6,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST['username']);
     $password = $_POST['password'];
 
-    // Check the database for the user
-    $sql = "SELECT * FROM users WHERE username = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
+    // Check if the user exists in the 'users' table
+    $sql_user = "SELECT * FROM users WHERE username = ?";
+    $stmt_user = $conn->prepare($sql_user);
 
-    if ($user) {
-        // Verify the password
+    if ($stmt_user === false) {
+        die('MySQL prepare error: ' . $conn->error);
+    }
+
+    $stmt_user->bind_param("s", $username);
+    $stmt_user->execute();
+    $result_user = $stmt_user->get_result();
+    $user = $result_user->fetch_assoc();
+
+    // Check if the user exists in the 'admins' table
+    $sql_admin = "SELECT * FROM admins WHERE username = ?";
+    $stmt_admin = $conn->prepare($sql_admin);
+
+    if ($stmt_admin === false) {
+        die('MySQL prepare error: ' . $conn->error);
+    }
+
+    $stmt_admin->bind_param("s", $username);
+    $stmt_admin->execute();
+    $result_admin = $stmt_admin->get_result();
+    $admin = $result_admin->fetch_assoc();
+
+    // Check if the user is in 'admins' table and verify password
+    if ($admin) {
+        if (password_verify($password, $admin['password'])) {
+            $_SESSION['username'] = $admin['username'];
+            $_SESSION['role'] = 'admin'; 
+            header("Location: admin_dashboard.php");
+            exit; // Ensure no further code is executed
+        } else {
+            $error_message = "Invalid username or password.";
+        }
+    } elseif ($user) {
+        // Check if the user is in 'users' table and verify password
         if (password_verify($password, $user['password'])) {
             $_SESSION['username'] = $user['username'];
+            $_SESSION['role'] = 'user';
             header("Location: home.php");
-            exit;
+            exit; // Ensure no further code is executed
         } else {
             $error_message = "Invalid username or password.";
         }
@@ -27,10 +56,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error_message = "User not found.";
     }
 
-    $stmt->close();
+    $stmt_user->close();
+    $stmt_admin->close();
     $conn->close();
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-image: url('./image/Background.jpeg'); /* Add your background image path */
+            background-image: url('./image/Background.jpeg');
             background-size: cover;
             background-position: center;
             margin: 0;

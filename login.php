@@ -6,56 +6,62 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST['username']);
     $password = $_POST['password'];
 
-fathiya
-// Check if the form data is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['username'], $_POST['password'])) {
-    $username = $_POST['username'];
-    $password = $_POST['password'];  // You should hash this password and compare against hashed password in DB
+    // Check if the user exists in the 'users' table
+    $sql_user = "SELECT * FROM users WHERE username = ?";
+    $stmt_user = $conn->prepare($sql_user);
 
-    // SQL to check the username and password, and get user role
-    $sql = "SELECT user_id, email FROM users WHERE username = ? AND password = ?";  // Adjust this to use password hashing
-=======
-    // Check the database for the user
-    $sql = "SELECT * FROM users WHERE username = ?";
- main
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
-fathiya
-    if ($result->num_rows === 1) {
-        $row = $result->fetch_assoc();
-        $_SESSION['user_id'] = $row['user_id'];  // Set user_id in session
+    if ($stmt_user === false) {
+        die('MySQL prepare error: ' . $conn->error);
+    }
 
-        // Determine user type based on the email domain
-        if ($username === 'mjadmin') {
-            header("Location: admin_dashboard.php");  // Redirect to admin dashboard
-        } elseif (strpos($row['email'], '@graduate.utm.my') !== false) {
-            header("Location: home.php");  // Redirect to home for UTM insiders
-        } else {
-            header("Location: guest_home.php");  // Redirect to guest home for other users
-        }
-        exit;
+    $stmt_user->bind_param("s", $username);
+    $stmt_user->execute();
+    $result_user = $stmt_user->get_result();
+    $user = $result_user->fetch_assoc();
 
-    if ($user) {
-        // Verify the password
-        if (password_verify($password, $user['password'])) {
-            $_SESSION['username'] = $user['username'];
-            header("Location: home.php");
-            exit;
+    // Check if the user exists in the 'admins' table
+    $sql_admin = "SELECT * FROM admins WHERE username = ?";
+    $stmt_admin = $conn->prepare($sql_admin);
+
+    if ($stmt_admin === false) {
+        die('MySQL prepare error: ' . $conn->error);
+    }
+
+    $stmt_admin->bind_param("s", $username);
+    $stmt_admin->execute();
+    $result_admin = $stmt_admin->get_result();
+    $admin = $result_admin->fetch_assoc();
+
+    // Check if the user is in 'admins' table and verify password
+    if ($admin) {
+        if (password_verify($password, $admin['password'])) {
+            $_SESSION['username'] = $admin['username'];
+            $_SESSION['role'] = 'admin'; 
+            header("Location: admin_dashboard.php");
+            exit; // Ensure no further code is executed
         } else {
             $error_message = "Invalid username or password.";
         }
- main
+    } elseif ($user) {
+        // Check if the user is in 'users' table and verify password
+        if (password_verify($password, $user['password'])) {
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['role'] = 'user';
+            header("Location: home.php");
+            exit; // Ensure no further code is executed
+        } else {
+            $error_message = "Invalid username or password.";
+        }
     } else {
         $error_message = "User not found.";
     }
 
-    $stmt->close();
+    $stmt_user->close();
+    $stmt_admin->close();
     $conn->close();
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,7 +71,7 @@ fathiya
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-image: url('./image/Background.jpeg'); /* Add your background image path */
+            background-image: url('./image/Background.jpeg');
             background-size: cover;
             background-position: center;
             margin: 0;

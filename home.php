@@ -23,11 +23,13 @@ $result = $conn->query($sql);
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to BookingSpace</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome link -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         /* General reset */
         * {
@@ -270,27 +272,31 @@ $result = $conn->query($sql);
 <body>
 
     <!-- Navbar -->
-    <div class="navbar">
-        <div class="navbar-title">
-            <img src="UTM-LOGO-FULL.png" alt="UTM Logo">
-            <img src="Mjiit RoomMaster logo.png" alt="MJIIT Logo">
-            <p>BookingSpace</p>
-        </div>
-        <div class="navbar-links">
-            <a href="#">Home</a>
-            <a href="my_bookings.php">My Bookings</a>
-            <a href="rooms.php">Rooms</a>
-            <a href="#">Analytics</a>
-            <a href="#">Help</a>
-        </div>
-        <div class="navbar-profile">
-            <i class="fa-regular fa-user"></i>
-        </div>
-        <!-- Logout Button -->
-        <div class="logout-button-container">
-            <a href="?logout=true" class="logout-button">Logout</a>
-        </div>
+    <!-- Navbar -->
+<div class="navbar">
+    <div class="navbar-title">
+        <img src="UTM-LOGO-FULL.png" alt="UTM Logo">
+        <img src="Mjiit RoomMaster logo.png" alt="MJIIT Logo">
+        <p>BookingSpace</p>
     </div>
+    <div class="navbar-links">
+        <a href="#">Home</a>
+        <a href="my_bookings.php">My Bookings</a>
+        <a href="rooms.php">Rooms</a>
+        <a href="#">Analytics</a>
+        <a href="#">Help</a>
+    </div>
+    
+    <!-- Logout Button -->
+    <div class="logout-button-container">
+        <a href="?logout=true" class="logout-button">Logout</a>
+    </div>
+
+    <div class="navbar-profile">
+        <a href="profile.php"><i class="fa-solid fa-user"></i></a> <!-- Profile icon -->
+    </div>
+</div>
+
 
     <!-- Welcome Page -->
     <div class="welcome-container my-5">

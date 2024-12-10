@@ -162,6 +162,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .footer-links a:hover {
             text-decoration: underline;
         }
+
+        .back-button {
+            display: block;
+            margin: 20px 0;
+            color: #2a9d8f;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back-button:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -169,8 +181,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Header Section with Navbar -->
     <div class="navbar">
         <div class="logo">
-            <img src="./image/utmlogo.jpg" alt="UTM Logo"> <!-- Replace with actual UTM logo URL -->
-            <img src="./image/MJIIT LOGO.jpg" alt="LOGO"> <!-- Replace with actual MJIIT logo URL -->
+            <img src="UTM-LOGO-FULL.png" alt="UTM Logo">
+            <img src="Mjiit RoomMaster logo.png" alt="MJIIT Logo">
         </div>
         <div>
             <a href="#">Home</a>
@@ -185,8 +197,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Form Container -->
     <div class="form-container">
         <div class="form-header">
-            <img src="./image/utmlogo.jpg" alt="UTM Logo" height="50px" width="100px"> <!-- Replace with actual UTM logo URL -->
-            <img src="./image/MJIIT LOGO.jpg" alt="MJIIT Logo" height="50px" width="100px"> <!-- Replace with actual MJIIT logo URL -->
+            <img src="UTM-LOGO-FULL.png" alt="UTM Logo" height="50px" width="100px"> <!-- Replace with actual UTM logo URL -->
+            <img src="Mjiit RoomMaster logo.png" alt="MJIIT Logo"> <!-- Replace with actual MJIIT logo URL -->
             <span>Malaysia-Japan International Institute of Technology</span>
         </div>
         <h1>Sign Up</h1>
@@ -197,6 +209,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter your password" required>
             <button type="submit">Sign Up</button>
         </form>
+        <a href="login.php" class="back-button">Already have an account? Login here</a>
     </div>
 
 </body>

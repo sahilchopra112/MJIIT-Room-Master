@@ -65,9 +65,9 @@
 <body>
     <div class="container">
         <h2>Book a Room</h2>
-        <form id="bookingForm" action="confirmation.html" method="POST">
+        <form id="bookingForm" action="book_room.php" method="POST">
             <label for="room">Select Room</label>
-            <select id="room" name="room">
+            <select id="room" name="room" required>
                 <option value="Bilik Kuliah 10">Bilik Kuliah 10</option>
                 <option value="Seminar Room">Seminar Room</option>
                 <option value="Bilik Kuliah 02">Bilik Kuliah 02</option>

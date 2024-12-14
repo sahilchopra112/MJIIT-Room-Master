@@ -1,10 +1,38 @@
-
 <?php
 include 'config.php'; // This includes your database connection setup
 
-// Fetch all rooms from the database
-$sql = "SELECT room_name, location, capacity, equipment, image, status FROM rooms";
-$result = $conn->query($sql);
+// Initialize search query and results
+$searchQuery = "";
+$result = null;
+
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['room_name'], $_GET['checkin_time'], $_GET['checkout_time'], $_GET['date'])) {
+    $room_name = $_GET['room_name'];
+    $checkin_time = $_GET['checkin_time'];
+    $checkout_time = $_GET['checkout_time'];
+    $date = $_GET['date'];
+
+    $searchQuery = " WHERE 1=1";
+
+    if (!empty($room_name)) {
+        $searchQuery .= " AND room_name LIKE '%" . $conn->real_escape_string($room_name) . "%'";
+    }
+    if (!empty($checkin_time) && !empty($checkout_time) && !empty($date)) {
+        $searchQuery .= " AND NOT EXISTS (
+            SELECT 1 FROM bookings 
+            WHERE bookings.room_id = rooms.room_id 
+            AND bookings.booking_date = '" . $conn->real_escape_string($date) . "'
+            AND (
+                (bookings.start_time BETWEEN '$checkin_time' AND '$checkout_time') OR
+                (bookings.end_time BETWEEN '$checkin_time' AND '$checkout_time') OR
+                ('$checkin_time' BETWEEN bookings.start_time AND bookings.end_time) OR
+                ('$checkout_time' BETWEEN bookings.start_time AND bookings.end_time)
+            )
+        )";
+    }
+
+    $sql = "SELECT room_name, location, capacity, equipment, image, status FROM rooms" . $searchQuery;
+    $result = $conn->query($sql);
+}
 ?>
 
 <!DOCTYPE html>
@@ -92,9 +120,7 @@ $result = $conn->query($sql);
             border-radius: 4px;
             text-align: center;
             max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-            width: 75%;
+            margin: 20px auto;
         }
 
         /* Search Bar Container */
@@ -113,28 +139,9 @@ $result = $conn->query($sql);
 
         .search-bar-item {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             padding: 10px;
-            border-right: 1px solid #8B0000;
-            flex: 2; /* Give more space */
-        }
-
-        .search-bar-item:last-child {
-            border-right: none;
-        }
-
-        .search-bar-item input, .search-bar-item select {
-            border: none;
-            outline: none;
-            width: 100%;
-        }
-
-        .search-bar-item input::placeholder {
-            color: #6c757d;
-        }
-
-        .search-bar-item.small {
-            flex: 1; /* Less space */
+            flex: 1; /* Equal space for all inputs */
         }
 
         .search-button {
@@ -144,6 +151,7 @@ $result = $conn->query($sql);
             border-radius: 8px;
             padding: 10px 20px;
             cursor: pointer;
+            margin-top: 20px;
         }
 
         .search-button:hover {
@@ -208,39 +216,28 @@ $result = $conn->query($sql);
         .room:hover {
             transform: translateY(-5px);
         }
+        .btn-book-now {
+        display: block;
+        width: calc(100% - 20px); /* Match image width */
+        margin: 0 auto;
+        padding: 10px 0;
+        background-color: #8B0000; /* Red color */
+        color: white;
+        text-decoration: none;
+        text-align: center;
+        border-radius: 5px;
+        font-size: 1em;
+        font-weight: bold;
+        margin-top: 10px;
+        transition: background-color 0.3s;
+    }
 
-        /* Availability status */
-        .room-status {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-left: 10px;
-        }
-
-        .available {
-            background-color: green;
-        }
-
-        .not-available {
-            background-color: red;
-        }
-
-        /* Button Styling */
-        .btn-quick-book {
-            background-color: white;
-            color: #8B0000;
-            border: 2px solid #8B0000;
-            font-weight: bold;
-        }
-
-        .btn-quick-book:hover {
-            background-color: #8B0000;
-            color: white;
-        }
+    .btn-book-now:hover {
+        background-color: #8B0000; /* Darker red on hover */
+    }
     </style>
 </head>
 <body>
-
     <!-- Navbar -->
     <div class="navbar">
         <div class="navbar-title">
@@ -261,80 +258,55 @@ $result = $conn->query($sql);
     </div>
 
     <!-- Welcome Page -->
-    <div class="welcome-container my-5">
-        <!-- Welcome Text Container -->
-        <div class="welcome-text-container mb-4">
-            <h2>Welcome to BookingSpace</h2>
-            <p>Efficiently manage and book rooms at MJIIT, Universiti Teknologi Malaysia.</p>
-            <button class="btn btn-quick-book mb-3">Quick Book</button>
-        </div>
-
-        <!-- Search Bar Container -->
-        <div class="search-bar-container">
-            <div class="search-bar-item">
-                <input type="text" placeholder="Room Name">
-            </div>
-            <div class="search-bar-item">
-                <select>
-                    <option>Check-in Time</option>
-                    <option>08:00</option>
-                    <option>09:00</option>
-                    <option>10:00</option>
-                </select>
-                <select>
-                    <option>Check-out Time</option>
-                    <option>10:00</option>
-                    <option>11:00</option>
-                    <option>12:00</option>
-                </select>
-            </div>
-            <div class="search-bar-item small">
-                <input type="text" placeholder="Number of People">
-            </div>
-            <button class="search-button">Search</button>
-        </div>
-
-        <!-- Rooms Container -->
-        <div class="rooms-container">
-            <?php
-            // Loop through each room fetched from the database
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    // Set room variables from the database
-                    $roomName = htmlspecialchars($row['room_name']);
-                    $location = htmlspecialchars($row['location']);
-                    $capacity = htmlspecialchars($row['capacity']);
-                    $equipment = htmlspecialchars($row['equipment']);
-                    $image = htmlspecialchars($row['image']);
-                    $status = htmlspecialchars($row['status']);
-
-                    // Determine availability status
-                    $availabilityClass = $status === 'Available' ? 'available' : 'not-available';
-                    ?>
-
-                    <!-- Dynamic Room Card -->
-                    <a href="booking.php?room=<?php echo urlencode($roomName); ?>&location=<?php echo urlencode($location); ?>&capacity=<?php echo urlencode($capacity); ?>&equipment=<?php echo urlencode($equipment); ?>&image=<?php echo urlencode($image); ?>">
-                        <div class="room">
-                            <img src="<?php echo $image; ?>" alt="<?php echo $roomName; ?>">
-                            <div class="room-details">
-                                <h3><?php echo $roomName; ?></h3>
-                                <p>Location: <?php echo $location; ?></p>
-                                <p>Capacity: <?php echo $capacity; ?> People</p>
-                                <p>Equipment: <?php echo $equipment; ?></p>
-                            </div>
-                            <div class="room-status <?php echo $availabilityClass; ?>"></div>
-                        </div>
-                    </a>
-
-                    <?php
-                }
-            } else {
-                echo "<p>No rooms available.</p>";
-            }
-            $conn->close();
-            ?>
-        </div>
+    <div class="welcome-text-container">
+        <h2>Welcome to BookingSpace</h2>
+        <p>Efficiently manage and book rooms at MJIIT, Universiti Teknologi Malaysia.</p>
     </div>
 
-</body>
-</html>
+    <!-- Search Bar -->
+    <form method="GET" class="search-bar-container">
+        <div class="search-bar-item">
+            <label for="room_name">Room Name</label>
+            <input type="text" id="room_name" name="room_name" placeholder="Enter room name">
+        </div>
+        <div class="search-bar-item">
+            <label for="date">Date</label>
+            <input type="date" id="date" name="date">
+        </div>
+        <div class="search-bar-item">
+            <label for="checkin_time">Check-in Time</label>
+            <input type="time" id="checkin_time" name="checkin_time">
+        </div>
+        <div class="search-bar-item">
+            <label for="checkout_time">Check-out Time</label>
+            <input type="time" id="checkout_time" name="checkout_time">
+        </div>
+        <button type="submit" class="search-button">Search</button>
+    </form>
+
+<!-- Rooms Container -->
+<?php if ($result): ?>
+    <div class="rooms-container">
+        <?php if ($result->num_rows > 0): ?>
+            <?php while ($row = $result->fetch_assoc()): ?>
+                <div class="room">
+                    <img src="<?php echo htmlspecialchars($row['image']); ?>" alt="<?php echo htmlspecialchars($row['room_name']); ?>">
+                    <div class="room-details">
+                        <h3><?php echo htmlspecialchars($row['room_name']); ?></h3>
+                        <p>Location: <?php echo htmlspecialchars($row['location']); ?></p>
+                        <p>Capacity: <?php echo htmlspecialchars($row['capacity']); ?> People</p>
+                        <p>Equipment: <?php echo htmlspecialchars($row['equipment']); ?></p>
+                        <!-- Book Now Button -->
+                        <a 
+                            href="booking.php?room_name=<?php echo urlencode($row['room_name']); ?>&date=<?php echo isset($date) ? urlencode($date) : ''; ?>&checkin_time=<?php echo isset($checkin_time) ? urlencode($checkin_time) : ''; ?>&checkout_time=<?php echo isset($checkout_time) ? urlencode($checkout_time) : ''; ?>" 
+                            class="btn-book-now">
+                            Book Now
+                        </a>
+                    </div>
+                </div>
+            <?php endwhile; ?>
+        <?php else: ?>
+            <p>No rooms available for the selected criteria.</p>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>

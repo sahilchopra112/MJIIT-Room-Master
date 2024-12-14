@@ -1,0 +1,315 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('bg website.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+/* Updated Navbar Styling */
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 10px 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    border-bottom: 2px solid #8B0000;
+    z-index: 10;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    max-height: 30px;
+    margin-right: 10px;
+}
+
+.logo b {
+    font-size: 20px;
+    color: rgb(34, 231, 212);
+}
+
+nav ul {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul li {
+    margin-left: 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: rgb(119, 4, 4);
+    font-size: 14px;
+    font-weight: bold; /* Make links more prominent */
+    transition: color 0.3s;
+}
+
+nav ul li a:hover {
+    color: #B22222; /* Darker red on hover */
+    text-decoration: underline; /* Add underline for hover effect */
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    color: #8B0000;
+    font-weight: bold;
+}
+
+/* Additional Styling for Mobile Responsiveness */
+@media screen and (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    nav ul {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    nav ul li {
+        margin: 10px 0;
+    }
+
+    .user-info {
+        margin-top: 10px;
+    }
+}
+
+
+/* Main Content Styles */
+main {
+    padding: 40px;
+}
+
+h1 {
+    color: #333;
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+/* User Management Styles */
+.user-management-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-management-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.user-management-header h2 {
+    margin: 0;
+    color: #8B0000;
+}
+
+.add-user-btn {
+    background-color: #8B0000;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.add-user-btn:hover {
+    background-color: #B22222;
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table th, table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+table th {
+    background-color: #8B0000;
+    color: white;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Action Buttons */
+.action-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.edit-btn {
+    background-color: #FFD700;
+    color: black;
+}
+
+.edit-btn:hover {
+    background-color: #FFC107;
+}
+
+.delete-btn {
+    background-color: #DC143C;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #B22222;
+}
+
+/* Search Bar Styles */
+.search-container {
+    margin-bottom: 20px;
+}
+
+.search-container input[type="text"] {
+    padding: 10px;
+    width: calc(100% - 100px);
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.search-container button {
+    padding: 10px;
+    background-color: #8B0000;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.search-container button:hover {
+    background-color: #B22222;
+}
+
+/* Footer Styles */
+footer {
+    background-color: #8B0000;
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+/* Access Tag Styles */
+.access-tag {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 0 5px 5px 0;
+    font-size: 12px;
+    border-radius: 4px;
+    color: white;
+    text-align: center;
+}
+
+.access-tag.admin {
+    background-color: #32CD32; /* Green for Admin */
+}
+
+.access-tag.data-import {
+    background-color: #1E90FF; /* Blue for Data Import */
+}
+
+.access-tag.data-export {
+    background-color: #FF69B4; /* Pink for Data Export */
+}
+/* User Management Header Buttons */
+.user-management-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px; /* Space between buttons */
+}
+
+/* Filter Button Styles */
+.filter-btn {
+    background-color: white;
+    color: #8B0000;
+    padding: 10px 15px;
+    border: 1px solid #8B0000;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.filter-btn:hover {
+    background-color: #8B0000;
+    color: white;
+}
+
+/* Updated Add User Button Styles */
+.add-user-btn {
+    display: flex;
+    align-items: center;
+    background-color: #FFD700; /* Yellow background */
+    color: black; /* Black text */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.add-user-btn span {
+    font-size: 18px;
+    margin-right: 8px;
+    font-weight: bold;
+}
+
+.add-user-btn:hover {
+    background-color: #FFC107; /* Darker yellow for hover */
+}
+/* Updated Filter Button Styles */
+.filter-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white; /* White background */
+    color: black; /* Black text */
+    border: 1px solid #D3D3D3; /* Light gray border */
+    padding: 10px 15px;
+    border-radius: 4px; /* Rounded corners */
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.filter-btn:hover {
+    background-color: orangered; /* Slightly darker on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Slightly deeper shadow on hover */
+}
+

@@ -7,11 +7,11 @@ CREATE TABLE IF NOT EXISTS users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,  -- Consider storing hashed passwords
-    email VARCHAR(255) NOT NULL UNIQUE
+    email VARCHAR(255) NOT NULL UNIQUE 
 );
 
 -- Table for storing room information
-CREATE TABLE IF NOT EXISTS rooms (
+CREATE TABLE IF NOT EXISTS rooms ( 
     room_id INT AUTO_INCREMENT PRIMARY KEY,
     room_name VARCHAR(255) NOT NULL,
     location VARCHAR(255) NOT NULL,

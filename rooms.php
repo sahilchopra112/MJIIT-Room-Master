@@ -175,6 +175,61 @@ $result = $conn->query($sql);
         .btn-book:hover {
             background-color: #5f2a1e;
         }
+
+        .filter-container {
+    max-width: 1200px;
+    margin: 20px auto 10px; /* Smaller bottom margin */
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filter-form {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) auto; /* Input fields take equal space, button adjusts */
+    align-items: center; /* Vertically align items */
+    gap: 15px; /* Gap between form items */
+}
+
+.filter-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-item label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.filter-item input {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.filter-button {
+    display: flex;
+    justify-content: flex-end; /* Push the button to the rightmost side */
+    margin-left: auto; /* Ensure it stays aligned to the right of the container */
+}
+
+.filter-button button {
+    padding: 10px 20px;
+    font-size: 14px;
+    background-color: #8B0000;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.filter-button button:hover {
+    background-color: #5f2a1e;
+}
+
     </style>
 </head>
 <body>
@@ -194,15 +249,50 @@ $result = $conn->query($sql);
         </div>
     </div>
 
-    <!-- Filters -->
     <div class="filter-container">
-        <form method="GET" action="rooms.php">
-            <input type="number" name="floor" placeholder="Floor Number (e.g., 3)" value="<?php echo $_GET['floor'] ?? ''; ?>">
-            <input type="number" name="capacity" placeholder="Min Capacity" value="<?php echo $_GET['capacity'] ?? ''; ?>">
-            <input type="text" name="equipment" placeholder="Equipment (e.g., Projector)" value="<?php echo $_GET['equipment'] ?? ''; ?>">
-            <button type="submit">Filter</button>
-        </form>
-    </div>
+    <form method="GET" action="rooms.php" class="filter-form">
+        <!-- Floor Filter -->
+        <div class="filter-item">
+            <label for="floor">Floor Number</label>
+            <input 
+                type="number" 
+                id="floor" 
+                name="floor" 
+                placeholder="e.g., 3" 
+                value="<?php echo $_GET['floor'] ?? ''; ?>" 
+                title="Enter the floor number (e.g., 3 for the third floor)">
+        </div>
+
+        <!-- Capacity Filter -->
+        <div class="filter-item">
+            <label for="capacity">Minimum Capacity</label>
+            <input 
+                type="number" 
+                id="capacity" 
+                name="capacity" 
+                placeholder="e.g., 10" 
+                value="<?php echo $_GET['capacity'] ?? ''; ?>" 
+                title="Enter the minimum capacity required (e.g., 10 for 10 people)">
+        </div>
+
+        <!-- Equipment Filter -->
+        <div class="filter-item">
+            <label for="equipment">Equipment</label>
+            <input 
+                type="text" 
+                id="equipment" 
+                name="equipment" 
+                placeholder="e.g., Projector" 
+                value="<?php echo $_GET['equipment'] ?? ''; ?>" 
+                title="Enter the equipment you need (e.g., Projector, Whiteboard)">
+        </div>
+
+        <!-- Filter Button -->
+        <div class="filter-button">
+            <button type="submit" title="Click to apply the filters">Filter</button>
+        </div>
+    </form>
+</div>
 
     <!-- Rooms Container -->
     <div class="rooms-container">

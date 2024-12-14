@@ -259,6 +259,179 @@
         <p>&copy; 2024 MJIIT BookingSpace - Admin Portal</p>
     </footer>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    // Get all DOM elements needed for filtering and searching
+    const searchInput = document.querySelector('.search-box input');
+    const searchButton = document.querySelector('.search-btn');
+    const filterButton = document.querySelector('.filter-btn');
+    const tbody = document.querySelector('table tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+
+    // Filter modal (we'll create this dynamically)
+    const filterModal = createFilterModal();
+    document.body.appendChild(filterModal);
+
+    // Search functionality
+    function performSearch() {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        
+        rows.forEach(row => {
+            const userName = row.querySelector('strong').textContent.toLowerCase();
+            const userEmail = row.querySelector('td div').textContent.toLowerCase();
+            
+            const isVisible = userName.includes(searchTerm) || userEmail.includes(searchTerm);
+            row.style.display = isVisible ? '' : 'none';
+        });
+    }
+
+    // Add event listeners for search
+    searchInput.addEventListener('input', performSearch);
+    searchButton.addEventListener('click', performSearch);
+
+    // Filter modal creation
+    function createFilterModal() {
+        const modal = document.createElement('div');
+        modal.classList.add('modal', 'filter-modal');
+        modal.innerHTML = `
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Filter Users</h2>
+                <div class="filter-section">
+                    <h3>Access Level</h3>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" name="accessFilter" value="admin"> Admin
+                        </label>
+                        <label>
+                            <input type="checkbox" name="accessFilter" value="dataImport"> Data Import
+                        </label>
+                        <label>
+                            <input type="checkbox" name="accessFilter" value="dataExport"> Data Export
+                        </label>
+                    </div>
+                </div>
+                <div class="filter-section">
+                    <h3>Date Range</h3>
+                    <div class="date-range">
+                        <label>From:</label>
+                        <input type="date" id="dateFrom">
+                        <label>To:</label>
+                        <input type="date" id="dateTo">
+                    </div>
+                </div>
+                <button id="applyFilters" class="submit-btn">Apply Filters</button>
+            </div>
+        `;
+
+        // Close button functionality
+        const closeBtn = modal.querySelector('.close');
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        // Apply filters functionality
+        const applyFiltersBtn = modal.querySelector('#applyFilters');
+        applyFiltersBtn.addEventListener('click', () => {
+            applyUserFilters();
+            modal.style.display = 'none';
+        });
+
+        return modal;
+    }
+
+    // Filter button click to show modal
+    filterButton.addEventListener('click', () => {
+        filterModal.style.display = 'block';
+    });
+
+    // Apply filters function
+    function applyUserFilters() {
+        // Get selected access levels
+        const selectedAccessLevels = Array.from(
+            document.querySelectorAll('input[name="accessFilter"]:checked')
+        ).map(cb => cb.value);
+
+        // Get date range
+        const dateFrom = document.getElementById('dateFrom').value;
+        const dateTo = document.getElementById('dateTo').value;
+
+        // Filter rows
+        rows.forEach(row => {
+            // Check access level filter
+            const accessTags = row.querySelectorAll('.access-tag');
+            const hasSelectedAccess = selectedAccessLevels.length === 0 || 
+                selectedAccessLevels.some(level => 
+                    Array.from(accessTags).some(tag => tag.textContent.toLowerCase().includes(level))
+                );
+
+            // Check date filter
+            const dateAdded = row.querySelectorAll('td')[4].textContent;
+            const rowDate = new Date(dateAdded);
+            
+            const fromDate = dateFrom ? new Date(dateFrom) : null;
+            const toDate = dateTo ? new Date(dateTo) : null;
+
+            const isInDateRange = (!fromDate || rowDate >= fromDate) && 
+                                  (!toDate || rowDate <= toDate);
+
+            // Apply visibility
+            row.style.display = (hasSelectedAccess && isInDateRange) ? '' : 'none';
+        });
+    }
+
+    // Add styles for filter modal
+    const filterModalStyle = document.createElement('style');
+    filterModalStyle.textContent = `
+        .filter-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .filter-modal .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+        }
+
+        .filter-modal .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .filter-modal .close:hover {
+            color: black;
+        }
+
+        .filter-section {
+            margin-bottom: 20px;
+        }
+
+        .filter-section h3 {
+            margin-bottom: 10px;
+        }
+
+        .checkbox-group, .date-range {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+    `;
+    document.head.appendChild(filterModalStyle);
+});
         // Handle clicks on data import/export tags
         document.addEventListener('DOMContentLoaded', function() {
             // Get all access tags

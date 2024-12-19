@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
 
     // Check if the user exists in the 'users' table
-    $sql_user = "SELECT * FROM users WHERE username = ?";
+    $sql_user = "SELECT user_id, username, password FROM users WHERE username = ?";
     $stmt_user = $conn->prepare($sql_user);
 
     if ($stmt_user === false) {
@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user = $result_user->fetch_assoc();
 
     // Check if the user exists in the 'admins' table
-    $sql_admin = "SELECT * FROM admins WHERE username = ?";
+    $sql_admin = "SELECT admin_id, username, password FROM admins WHERE username = ?";
     $stmt_admin = $conn->prepare($sql_admin);
 
     if ($stmt_admin === false) {
@@ -35,20 +35,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Check if the user is in 'admins' table and verify password
     if ($admin) {
         if (password_verify($password, $admin['password'])) {
+            $_SESSION['user_id'] = $admin['admin_id'];
             $_SESSION['username'] = $admin['username'];
-            $_SESSION['role'] = 'admin'; 
+            $_SESSION['role'] = 'admin';
             header("Location: admin_dashboard.php");
-            exit; // Ensure no further code is executed
+            exit();
         } else {
             $error_message = "Invalid username or password.";
         }
     } elseif ($user) {
         // Check if the user is in 'users' table and verify password
         if (password_verify($password, $user['password'])) {
+            $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['role'] = 'user';
             header("Location: home.php");
-            exit; // Ensure no further code is executed
+            exit();
         } else {
             $error_message = "Invalid username or password.";
         }
